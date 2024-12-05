@@ -2,7 +2,6 @@ import re
 
 def uncorruptedInstructionsResult(inputFile):
     
-    data = ""
     with open(inputFile, 'r') as file:
         data = file.read()
     
@@ -17,6 +16,7 @@ def uncorruptedInstructionsResult(inputFile):
         elif match.group(4) == 'don\'t':
             skipNext = True;
         elif not skipNext:
+            print(match.group(0))
             result += int(match.group(1)) * int(match.group(2))
     
     print(result)
@@ -30,7 +30,7 @@ def uncorruptedInstructionsResult2(inputFile):
     multPattern = r'mul\((\d+),(\d+)\)'
     conditionalPattern = r'do\(\)(.*?)don\'t\(\)'
 
-    enabledBlocks = re.finditer(conditionalPattern, data)
+    enabledBlocks = re.finditer(conditionalPattern, data, re.DOTALL)
     
     result = 0
     
@@ -38,8 +38,9 @@ def uncorruptedInstructionsResult2(inputFile):
         multiplications = re.finditer(multPattern, block.group(0))
         
         for match in multiplications:
+            print(match.group(0))
             result += int(match.group(1)) * int(match.group(2))
     
     print(result)
     
-uncorruptedInstructionsResult('day3-input.txt')
+uncorruptedInstructionsResult2('day3-input.txt')
