@@ -1,4 +1,6 @@
-# Day 1: Part 1
+# Day 1: Historian Hysteria
+
+# Part 1
 def listDifferences(inputFile):
     list1 = []
     list2 = []
@@ -19,7 +21,7 @@ def listDifferences(inputFile):
         
     print(diff)
     
-# Day 1: Part 2
+# Part 2
 def occurences(inputFile):
     list1 = []
     list2 = []
@@ -46,3 +48,9 @@ def occurences(inputFile):
             similarityScore += number * occurences[number]
             
     print(similarityScore)
+    
+print('Part 1: ', end='')
+listDifferences('day1-input.txt', False)
+
+print('Part 2: ', end='')
+occurences('day1-input.txt', True)

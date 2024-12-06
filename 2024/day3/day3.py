@@ -1,6 +1,24 @@
 import re
 
+# Day 3: Mull It Over
+
+# Part 1
 def uncorruptedInstructionsResult(inputFile):
+    
+    data = ""
+    with open(inputFile, 'r') as file:
+        data = file.read()
+    
+    matches = re.finditer(r'mul\((\d+),(\d+)\)', data)
+    
+    result = 0
+    for match in matches:
+        result += int(match.group(1)) * int(match.group(2))
+    
+    print(result)
+
+# Part 2
+def uncorruptedInstructionsResultWithConditions(inputFile):
     
     with open(inputFile, 'r') as file:
         data = file.read()
@@ -21,7 +39,8 @@ def uncorruptedInstructionsResult(inputFile):
     
     print(result)
     
-def uncorruptedInstructionsResult2(inputFile):
+# Part 2 (alternative)
+def uncorruptedInstructionsResultWithConditions2(inputFile):
     
     data = ""
     with open(inputFile, 'r') as file:
@@ -43,4 +62,8 @@ def uncorruptedInstructionsResult2(inputFile):
     
     print(result)
     
-uncorruptedInstructionsResult2('day3-input.txt')
+print('Part 1: ', end='')
+uncorruptedInstructionsResult('day3-input.txt')
+
+print('Part 2: ', end='')
+uncorruptedInstructionsResultWithConditions('day3-input.txt')

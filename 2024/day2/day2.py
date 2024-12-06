@@ -1,3 +1,4 @@
+# Day 2: Red-Nosed Reports
 
 def removeElementAt(list: list, index: int):
     '''
@@ -46,6 +47,7 @@ def isReportSafe(levels: list, enableDampener: bool, depth: int = 0):
     # If no unsafe levels are found - return true
     return True;
 
+# Part 1 and 2 (with dampener on and off)
 # We call the isReportSafe function for every line of the input and count the safe reports
 def safeReportsCount(inputFile, enableDampener):
     safeLevels = 0
@@ -59,10 +61,8 @@ def safeReportsCount(inputFile, enableDampener):
                 
     print(safeLevels)
 
-# Part 1
 print('Part 1: ', end='')
 safeReportsCount('day2-input.txt', False)
 
-# Part 2
 print('Part 2: ', end='')
 safeReportsCount('day2-input.txt', True)
