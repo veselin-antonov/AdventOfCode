@@ -1,3 +1,5 @@
+# Day 6: Guard Gallivant
+
 from enum import Enum
 
 def isInsideMap(position, width, height):
@@ -72,6 +74,12 @@ def hasCycles(guardMap, startingPosition, placedObstacle):
             visited.add((currentPos, direction))
             guardPosition = currentPos
 
+def guardPathLength(inputFile):
+    with open(inputFile, 'r') as file:
+        guardMap = file.read().split('\n')
+        
+    print('Part 1: ', len(mapGuardPath(guardMap)[0]))
+
 def possibleCyclesCount(inputFile):
     with open(inputFile, 'r') as file:
         guardMap = file.read().split('\n')
@@ -85,12 +93,6 @@ def possibleCyclesCount(inputFile):
             cyclesCount += 1
     
     print('Part 2: ', cyclesCount)
-    
-def guardPathLength(inputFile):
-    with open(inputFile, 'r') as file:
-        guardMap = file.read().split('\n')
-        
-    print('Part 1: ', len(mapGuardPath(guardMap)[0]))
 
 guardPathLength('day6-input.txt')
 possibleCyclesCount('day6-input.txt')
