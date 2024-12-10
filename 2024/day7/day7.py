@@ -36,7 +36,5 @@ def tryToFixEquation(inputFile):
                     
     print('Part 1: ', possibleResults)
     print('Part 2: ', possibleResults2)
-
         
 tryToFixEquation('day7-input.txt')
-        
