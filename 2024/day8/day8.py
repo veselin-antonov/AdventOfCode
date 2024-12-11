@@ -74,8 +74,8 @@ def getAntennaCoordinates(inputFile):
         if (isInMap(antiNode, len(data[0]), len(data))):
             antiNodesWithResonantHarmonics.add(antiNode)
         
-    print(len(antiNodes))
-    print(len(antiNodesWithResonantHarmonics))
+    print('Part 1: ', len(antiNodes))
+    print('Part 2: ', len(antiNodesWithResonantHarmonics))
     
 getAntennaCoordinates('day8-input.txt')
 
