@@ -1,15 +1,47 @@
 # Day 8: Resonant Collinearity
 
+def addPoints(point1, point2):
+    return tuple(a + b for a, b in zip(point1, point2))
+
+def subtractPoints(point1, point2):
+    return tuple(a - b for a, b in zip(point1, point2))
+
 def isInMap(position, width, height):
     x, y = position
     return x >= 0 and x < width and y >= 0 and y < height
 
-def generateAntennaAntinodes(antennas):
-    for antenna in antennas:
-        coordinates = antenna[1]
+def getAntiNodesGen(antennaCoordniates):
+    for coordinates in antennaCoordniates:
         for startPoint in range(len(coordinates) - 1):
             for endPoint in range(startPoint + 1, len(coordinates)):
-                yield (coordinates[startPoint], coordinates[endPoint])
+                startPos = coordinates[startPoint]
+                endPos = coordinates[endPoint]
+                dPos1 = subtractPoints(endPos, startPos)
+                dPos2 = subtractPoints(startPos, endPos)
+                
+                yield addPoints(endPos, dPos1)
+                yield addPoints(startPos, dPos2)
+                
+def getAntiNodesWithResonantHarmonicsGen(antennaCoordniates, width, height):
+    for coordinates in antennaCoordniates:
+        for startPoint in range(len(coordinates) - 1):
+            for endPoint in range(startPoint + 1, len(coordinates)):
+                startPos = coordinates[startPoint]
+                endPos = coordinates[endPoint]
+                
+                currPos = endPos
+                dPos = subtractPoints(endPos, startPos)
+                
+                while isInMap(currPos, width, height):
+                    yield currPos
+                    currPos = addPoints(currPos, dPos)
+                    
+                currPos = startPos
+                dPos = subtractPoints(startPos, endPos)
+                
+                while isInMap(currPos, width, height):
+                    yield currPos
+                    currPos = addPoints(currPos, dPos)
 
 def getAntennaCoordinates(inputFile):
     antennas = {}
@@ -19,17 +51,31 @@ def getAntennaCoordinates(inputFile):
             
     for row in range(len(data)):
         for col in range(len(data[row])):
-            if data[row][col] == '.' :
+            currChar = data[row][col]
+            if currChar == '.' :
                 continue
             
-            if not data[row][col] in antennas:
-                antennas[data[row][col]] = []
+            if not currChar in antennas:
+                antennas[currChar] = []
                 
-            antennas[data[row][col]].append((row, col))
+            antennas[currChar].append((col, row))
             
     activeAntennas = dict(filter(lambda item: len(item[1]) > 1, antennas.items()))
+    antiNodeGen = getAntiNodesGen([item[1] for item in activeAntennas.items()])
     
-    [print(f'{antenna}: {coordinates}') for antenna, coordinates in activeAntennas.items()]
+    antiNodes = set()
+    for antiNode in antiNodeGen:
+        if (isInMap(antiNode, len(data[0]), len(data))):
+            antiNodes.add(antiNode)
+            
+    antiNodeGen = getAntiNodesWithResonantHarmonicsGen([item[1] for item in activeAntennas.items()], len(data[0]), len(data))
+    antiNodesWithResonantHarmonics = set()  
+    for antiNode in antiNodeGen:
+        if (isInMap(antiNode, len(data[0]), len(data))):
+            antiNodesWithResonantHarmonics.add(antiNode)
+        
+    print(len(antiNodes))
+    print(len(antiNodesWithResonantHarmonics))
     
 getAntennaCoordinates('day8-input.txt')
 
