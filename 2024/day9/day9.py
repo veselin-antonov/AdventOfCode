@@ -36,14 +36,10 @@ def parseDataInGroups(compressedData):
     dataID = 0
     for i in range(0, len(compressedData) - 1, 2):
         dataBlockGroupSize = int(compressedData[i])
-        dataBlockGroup = list([dataID for _ in range(dataBlockGroupSize)])
-        if (dataBlockGroupSize > 0):
-            data.append(dataBlockGroup)
+        data.append(list([dataID for _ in range(dataBlockGroupSize)]))
             
         emptyBlockGroupSize = int(compressedData[i + 1])
-        emptyBlockGroup = list([-1 for _ in range(emptyBlockGroupSize)])
-        if (emptyBlockGroupSize > 0):
-            data.append(emptyBlockGroup)
+        data.append(list([-1 for _ in range(emptyBlockGroupSize)]))
             
         dataID += 1
             
@@ -79,30 +75,27 @@ def compressDataRecursively(dataBlocks):
         data.extend(compressDataRecursively(dataBlocks[1:]))
         return data
     
-def compressDataWithoutFragmentation(dataBlockGroups):
-    lastGroupIndex = len(dataBlockGroups) - 1
-    for groupIndex in range(len(dataBlockGroups)):
-        
-        if (groupIndex >= lastGroupIndex):
-                break;
-            
-        group = dataBlockGroups[groupIndex]
-        
-        if group[0] == -1:
-            lastGroup = dataBlockGroups[lastGroupIndex]
-            while lastGroup[0] == -1 or len(lastGroup) > len(group):
-                lastGroupIndex -= 1
-                lastGroup = dataBlockGroups[lastGroupIndex]
-                
-            dataBlockGroups[groupIndex] = lastGroup
-            dataBlockGroups[lastGroupIndex] = []
-            
-            lastGroupIndex -= 1
+def compressDataWithoutFragmentation(dataBlockGroups: list):
+    currentFileID = dataBlockGroups[-2][0]
+    for currentFileIndex in range(len(dataBlockGroups) - 1, 0, -1):
+        currentFile = dataBlockGroups[currentFileIndex]
+        currentFileSize = len(currentFile)
+        if currentFileSize > 0 and currentFile[0] == currentFileID:
+            for emptySpanIndex in range(currentFileIndex):
+                emptySpan = dataBlockGroups[emptySpanIndex]
+                emptySpanSize = len(emptySpan)
+                if emptySpanSize > 0 and emptySpan[0] == -1 and len(currentFile) <= len(emptySpan):
+                    dataBlockGroups[emptySpanIndex] = emptySpan[len(currentFile):]
+                    dataBlockGroups.insert(emptySpanIndex, currentFile)
+                    dataBlockGroups[currentFileIndex + 1] = [-1 for _ in range(currentFileSize)]
+                    currentFileIndex += 1
+                    break
+            currentFileID -= 1;
             
     return [dataBlock for dataBlockGroup in dataBlockGroups for dataBlock in dataBlockGroup]
 
 def checkSum(data):
-    return sum([data[i] * i for i in range(len(data))])
+    return sum([data[i] * i for i in range(len(data)) if data[i] > 0])
     
 def part1(inputFile):
     with open(inputFile, 'r') as file:
@@ -112,6 +105,7 @@ def part1(inputFile):
             
     compressedData = compressDataWithoutFragmentation(parsedData)
     
+    print(compressedData)
     print(checkSum(compressedData))
     
 part1('day9-input.txt')
