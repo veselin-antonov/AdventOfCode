@@ -79,21 +79,19 @@ def findPaths(pos, grid):
     
     return totalPaths
 
-def task(inputFile):
-    with open(inputFile, 'r') as file:
-        grid = [[int(char) if char != '.' else -1 for char in line] for line in file.read().strip().split('\n')]
-    
-    statsPerTrailheads = [
-        (findPeaks((row, col), grid), findPaths((row, col), grid))
-        for row in range(len(grid))
-        for col in range(len(grid[0]))
-        if grid[row][col] == 0
-    ]
-    
-    totalPeaks = sum([len(stats[0]) for stats in statsPerTrailheads])
-    totalPaths = sum([stats[1] for stats in statsPerTrailheads])
-    
-    print('Part 1: ', totalPeaks)
-    print('Part 2: ', totalPaths)
-    
-task('day10-input.txt')
+
+with open('day10-input.txt', 'r') as file:
+    grid = [[int(char) if char != '.' else -1 for char in line] for line in file.read().strip().split('\n')]
+
+statsPerTrailheads = [
+    (findPeaks((row, col), grid), findPaths((row, col), grid))
+    for row in range(len(grid))
+    for col in range(len(grid[0]))
+    if grid[row][col] == 0
+]
+
+totalPeaks = sum([len(stats[0]) for stats in statsPerTrailheads])
+totalPaths = sum([stats[1] for stats in statsPerTrailheads])
+
+print('Part 1: ', totalPeaks)
+print('Part 2: ', totalPaths)
