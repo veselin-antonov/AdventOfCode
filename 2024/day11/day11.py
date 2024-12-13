@@ -1,32 +1,42 @@
 import math
-from itertools import islice
 
-def chunked(generator, chunk_size):
-    """Yield chunks of data from a generator."""
-    iterator = iter(generator)
-    while True:
-        chunk = list(islice(iterator, chunk_size))
-        if not chunk:
-            break
-        yield chunk
-
-def blink(stones):
-    for stone in stones:
-        if (stone == '0'):
-            yield '1'
-            continue;
+def blink(stone):
+        if (stone == 0):
+            yield [1]
         
         stoneNumber = int(stone)
-        if (math.floor(math.log10(stoneNumber)) + 1) % 2 == 0:
-            yield str(stoneNumber // 10**(len(stone) // 2))
-            yield str(stoneNumber % 10**(len(stone) // 2))
+        digitsCount = (math.floor(math.log10(stoneNumber)) + 1)
+        if digitsCount % 2 == 0:
+            halfDigits = 10**(digitsCount // 2)
+            yield [stoneNumber // halfDigits, stoneNumber % halfDigits]
         else:
-            yield str(stoneNumber * 2024)
+            yield [stoneNumber * 2024]
 
 with open('day11-input.txt', 'r') as file:
     stones = file.read().split(' ')
     
-for _ in range(45):
-    stones = blink(stones)
-    
-print('Part 1:', sum([1 for _ in stones]))
+countPerStone = dict()
+for stone in map(int, stones):
+    if not stone in countPerStone:
+        countPerStone[stone] = 1
+    else:
+        countPerStone[stone] += 1
+   
+part1 = 0
+part2 = 0
+        
+for i in range(75):
+    newCountPerStone = dict()
+    for stone, count in countPerStone.items():
+        newStones = next(blink(stone))
+        for newStone in newStones:
+            if not newStone in newCountPerStone:
+                newCountPerStone[newStone] = count
+            else:
+                newCountPerStone[newStone] += count
+    if (i == 25):
+        part1 = sum(countPerStone.values())
+    countPerStone = newCountPerStone
+
+print('Part 1:', part1)
+print('Part 2:', sum(countPerStone.values()))
