@@ -1,38 +1,13 @@
 # Day 10: Hoof It
 
-from enum import Enum
-
-class Direction(Enum):
-    NORTH = (-1, 0)
-    SOUTH = (1, 0)
-    EAST = (0, 1)
-    WEST = (0, -1)
-    
-    def move(self, position):
-        row, col = position
-        dRow, dCol = self.value
-        return (row + dRow, col + dCol)
-    
-    def turnRight(self):
-        directions = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
-        
-        return directions[(directions.index(self) + 1) % len(directions)]
-    
-    def turnLeft(self):
-        directions = [Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST]
-        
-        return directions[(directions.index(self) + 1) % len(directions)]
-    
-def isInsideMap(pos, rows, cols):
-    row, col = pos
-    return not (row < 0 or row >= rows or col < 0 or col >= cols)
+from utils import Direction, isInbounds
     
 def findPeaksHelper(pos, direction: Direction, grid):
     newPos = direction.move(pos)
     nRow, nCol = newPos
     row, col = pos
     
-    if (not isInsideMap(newPos, len(grid[0]), len(grid))
+    if (not isInbounds(newPos, len(grid[0]), len(grid))
         or grid[nRow][nCol] != grid[row][col] + 1):
         return []
     elif grid[nRow][nCol] == 9:
@@ -47,7 +22,7 @@ def findPeaksHelper(pos, direction: Direction, grid):
 def findPeaks(pos, grid):
     peaks = {
         peak
-        for direction in Direction
+        for direction in [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
         for peak in (findPeaksHelper(pos, direction, grid) or [])
         if peak is not None
     }
@@ -59,7 +34,7 @@ def findPathsHelper(pos, direction: Direction, grid):
     nRow, nCol = newPos
     row, col = pos
     
-    if (not isInsideMap(newPos, len(grid[0]), len(grid))
+    if (not isInbounds(newPos, len(grid[0]), len(grid))
         or grid[nRow][nCol] != grid[row][col] + 1):
         return 0
     elif grid[nRow][nCol] == 9:
@@ -74,7 +49,7 @@ def findPathsHelper(pos, direction: Direction, grid):
 def findPaths(pos, grid):
     totalPaths = sum([
         findPathsHelper(pos, direction, grid)
-        for direction in Direction
+        for direction in [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
     ])
     
     return totalPaths

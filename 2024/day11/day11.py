@@ -1,3 +1,5 @@
+# Day 11: Plutonian Pebbles
+
 import math
 
 def blink(stone):
