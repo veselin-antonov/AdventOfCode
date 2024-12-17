@@ -1,32 +1,13 @@
 # Day 6: Guard Gallivant
 
-from enum import Enum
-
-def isInsideMap(position, width, height):
-    return position[0] >= 0 and position[0] < width and position[1] >= 0 and position[1] < height
-
-class Direction(Enum):
-    NORTH = (0, -1)
-    SOUTH = (0, 1)
-    EAST = (1, 0)
-    WEST = (-1, 0)
-    
-    def move(self, position):
-        x, y = position
-        dx, dy = self.value
-        return (x + dx, y + dy)
-    
-    def turnRight(self):
-        directions = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
-        
-        return directions[(directions.index(self) + 1) % len(directions)]
+from utils import Direction, isInbounds
 
 def mapGuardPath(guardMap):
     guardPosition = None
-    for y in range(len(guardMap)):
-        for x in range(len(guardMap[0])):
-            if guardMap[y][x] == '^':
-                guardPosition = (x, y)
+    for row in range(len(guardMap)):
+        for col in range(len(guardMap[0])):
+            if guardMap[row][col] == '^':
+                guardPosition = (row, col)
                 break
         if guardPosition:
             break
@@ -39,12 +20,12 @@ def mapGuardPath(guardMap):
 
     while (True):
         currentPos = direction.move(guardPosition)
-        cX, cY = currentPos
+        row, col = currentPos
         
-        if not isInsideMap(currentPos, len(guardMap), len(guardMap[0])):
+        if not isInbounds(currentPos, len(guardMap), len(guardMap[0])):
             break
         
-        if guardMap[cY][cX] == '#':
+        if guardMap[row][col] == '#':
             direction = direction.turnRight()
         else:
             visited.add(currentPos)
@@ -61,12 +42,12 @@ def hasCycles(guardMap, startingPosition, placedObstacle):
         
     while (True):
         currentPos = direction.move(guardPosition)
-        cX, cY = currentPos
+        row, col = currentPos
         
-        if not isInsideMap(currentPos, len(guardMap), len(guardMap[0])):
+        if not isInbounds(currentPos, len(guardMap), len(guardMap[0])):
             return False
         
-        if guardMap[cY][cX] == '#' or currentPos == placedObstacle:
+        if guardMap[row][col] == '#' or currentPos == placedObstacle:
             direction = direction.turnRight()
         elif (currentPos, direction) in visited:
             return True
